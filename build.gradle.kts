@@ -3,7 +3,7 @@ plugins {
 }
 
 application {
-    mainClassName = "io.fobo66.crypto.Lab2"
+    mainClass.set("io.fobo66.crypto.Lab2")
 }
 
 allprojects{
