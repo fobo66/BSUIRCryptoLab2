@@ -1,18 +1,24 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version "1.7.20"
     application
 }
 
 application {
-    mainClass.set("dev.fobo66.crypto.Lab2")
+    mainClass.set("dev.fobo66.crypto.Lab2Kt")
 }
 
-allprojects{
+allprojects {
     repositories {
         mavenCentral()
     }
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "11"
+}
+
 dependencies {
-    implementation("commons-cli:commons-cli:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
 }

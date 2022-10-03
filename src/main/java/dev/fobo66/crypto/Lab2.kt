@@ -1,49 +1,39 @@
-package dev.fobo66.crypto;
+package dev.fobo66.crypto
 
-import org.apache.commons.cli.*;
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import java.io.IOException
+import java.math.BigInteger
+import java.nio.file.Files
+import java.nio.file.Paths
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.math.BigInteger;
-import java.nio.file.Paths;
-
-public class Lab2 {
-    public static void main(String[] args) {
-
-        RSA rsa = new RSA();
-        String message = "Hello World!";
-
-        Options options = new Options();
-        options.addOption("f", "file", true, "Input file");
-
-        CommandLineParser parser = new DefaultParser();
-        try {
-            CommandLine cmd = parser.parse(options, args);
-
-            if (cmd.hasOption("file")) {
-                String filePath = cmd.getOptionValue("file");
-                System.out.format("Reading cleartext from file %s...%n", filePath);
-                message = loadClearTextFromFile(filePath);
-            }
-
-            byte[] encryptedText = rsa.encrypt(message.getBytes());
-            byte[] decryptedText = rsa.decrypt(encryptedText);
-            printResults(message, encryptedText, decryptedText);
-        } catch (ParseException e) {
-            System.err.println("Failed to parse command line arguments. Reason: " + e.getMessage());
-            System.exit(1);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read cleartext from file", e);
+fun main(args: Array<String>) {
+    val rsa = RSA()
+    var message = "Hello World!"
+    val parser = ArgParser("lab2")
+    val inputFile by parser.option(ArgType.String, shortName = "f", fullName = "file", description = "Input file")
+    try {
+        parser.parse(args)
+        if (inputFile != null) {
+            val filePath = inputFile!!
+            println("Reading cleartext from file $filePath...")
+            message = loadClearTextFromFile(filePath)
         }
+        val encryptedText = rsa.encrypt(message.toByteArray())
+        val decryptedText = rsa.decrypt(encryptedText)
+        printResults(message, encryptedText, decryptedText)
+    } catch (e: IOException) {
+        throw RuntimeException("Failed to read cleartext from file", e)
     }
+}
 
-    private static void printResults(String message, byte[] encryptedText, byte[] decryptedText) {
-        System.out.println("Clear text: " + message);
-        System.out.println("Encrypted text: " + new BigInteger(encryptedText).toString(16));
-        System.out.println("Decrypted text: " + new String(decryptedText));
-    }
+private fun printResults(message: String, encryptedText: ByteArray, decryptedText: ByteArray) {
+    println("Clear text: $message")
+    println("Encrypted text: " + BigInteger(encryptedText).toString(16))
+    println("Decrypted text: " + String(decryptedText))
+}
 
-    private static String loadClearTextFromFile(String filePath) throws IOException {
-        return new String(Files.readAllBytes(Paths.get(filePath)));
-    }
+@Throws(IOException::class)
+private fun loadClearTextFromFile(filePath: String): String {
+    return String(Files.readAllBytes(Paths.get(filePath)))
 }
