@@ -1,26 +1,24 @@
 package dev.fobo66.crypto
 
 import java.math.BigInteger
-import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
 class RSA {
-    private var p: BigInteger
-    private var q: BigInteger
-    private var N: BigInteger
-    private var phi: BigInteger
-    private var e: BigInteger
-    private var d: BigInteger
+    private val p: BigInteger
+    private val q: BigInteger
+    private val N: BigInteger
+    private val phi: BigInteger
+    private val e: BigInteger
+    private val d: BigInteger
     private val bitlength = 1024
-    private val r: Random
+    private val random = ThreadLocalRandom.current()
 
     init {
-        r = ThreadLocalRandom.current()
-        p = BigInteger.probablePrime(bitlength, r)
-        q = BigInteger.probablePrime(bitlength, r)
+        p = BigInteger.probablePrime(bitlength, random)
+        q = BigInteger.probablePrime(bitlength, random)
         N = p.multiply(q)
         phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE))
-        e = BigInteger.probablePrime(bitlength / 2, r)
+        e = BigInteger.probablePrime(bitlength / 2, random)
         while (phi.gcd(e) > BigInteger.ONE && e < phi) {
             e.add(BigInteger.ONE)
         }

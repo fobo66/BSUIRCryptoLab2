@@ -4,8 +4,8 @@ import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import java.io.IOException
 import java.math.BigInteger
-import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.io.path.readText
 
 fun main(args: Array<String>) {
     val rsa = RSA()
@@ -30,10 +30,10 @@ fun main(args: Array<String>) {
 private fun printResults(message: String, encryptedText: ByteArray, decryptedText: ByteArray) {
     println("Clear text: $message")
     println("Encrypted text: " + BigInteger(encryptedText).toString(16))
-    println("Decrypted text: " + String(decryptedText))
+    println("Decrypted text: " + decryptedText.toString(Charsets.UTF_8))
 }
 
 @Throws(IOException::class)
 private fun loadClearTextFromFile(filePath: String): String {
-    return String(Files.readAllBytes(Paths.get(filePath)))
+    return Paths.get(filePath).readText()
 }
