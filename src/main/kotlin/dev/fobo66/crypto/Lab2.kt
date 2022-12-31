@@ -23,15 +23,17 @@ fun main(args: Array<String>) {
         val decryptedText = rsa.decrypt(encryptedText)
         printResults(message, encryptedText, decryptedText)
     } catch (e: IOException) {
-        throw RuntimeException("Failed to read cleartext from file", e)
+        throw IllegalStateException("Failed to read cleartext from file", e)
     }
 }
 
 private fun printResults(message: String, encryptedText: ByteArray, decryptedText: ByteArray) {
     println("Clear text: $message")
-    println("Encrypted text: " + BigInteger(encryptedText).toString(16))
+    println("Encrypted text: " + BigInteger(encryptedText).toString(HEX_RADIX))
     println("Decrypted text: " + decryptedText.toString(Charsets.UTF_8))
 }
+
+private const val HEX_RADIX = 16
 
 @Throws(IOException::class)
 private fun loadClearTextFromFile(filePath: String): String {

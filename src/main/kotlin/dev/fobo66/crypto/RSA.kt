@@ -1,24 +1,21 @@
 package dev.fobo66.crypto
 
 import java.math.BigInteger
+import java.util.Random
 import java.util.concurrent.ThreadLocalRandom
 
-class RSA {
-    private val p: BigInteger
-    private val q: BigInteger
-    private val N: BigInteger
-    private val phi: BigInteger
-    private val e: BigInteger
+class RSA(
+    keyLength: Int = DEFAULT_KEY_LENGTH,
+    random: Random = ThreadLocalRandom.current()
+) {
+    private val p: BigInteger = BigInteger.probablePrime(keyLength, random)
+    private val q: BigInteger = BigInteger.probablePrime(keyLength, random)
+    private val keyPowerN: BigInteger = p.multiply(q)
+    private val phi: BigInteger = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE))
+    private val e: BigInteger = BigInteger.probablePrime(keyLength / 2, random)
     private val d: BigInteger
-    private val bitlength = 1024
-    private val random = ThreadLocalRandom.current()
 
     init {
-        p = BigInteger.probablePrime(bitlength, random)
-        q = BigInteger.probablePrime(bitlength, random)
-        N = p.multiply(q)
-        phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE))
-        e = BigInteger.probablePrime(bitlength / 2, random)
         while (phi.gcd(e) > BigInteger.ONE && e < phi) {
             e.add(BigInteger.ONE)
         }
@@ -26,10 +23,14 @@ class RSA {
     }
 
     fun encrypt(message: ByteArray?): ByteArray {
-        return BigInteger(message).modPow(e, N).toByteArray()
+        return BigInteger(message).modPow(e, keyPowerN).toByteArray()
     }
 
     fun decrypt(message: ByteArray?): ByteArray {
-        return BigInteger(message).modPow(d, N).toByteArray()
+        return BigInteger(message).modPow(d, keyPowerN).toByteArray()
+    }
+
+    companion object {
+        const val DEFAULT_KEY_LENGTH = 1024
     }
 }
