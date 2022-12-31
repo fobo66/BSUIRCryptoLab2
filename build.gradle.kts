@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.8.0"
     application
+    `jvm-test-suite`
 }
 
 application {
@@ -15,8 +16,16 @@ allprojects {
     }
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "11"
+kotlin {
+    jvmToolchain(17)
+}
+
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useKotlinTest("1.8.0")
+        }
+    }
 }
 
 dependencies {
