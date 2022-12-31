@@ -1,19 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version libs.versions.kotlin
     application
     `jvm-test-suite`
 }
 
 application {
     mainClass.set("dev.fobo66.crypto.Lab2Kt")
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
-    }
 }
 
 kotlin {
@@ -23,11 +15,11 @@ kotlin {
 testing {
     suites {
         val test by getting(JvmTestSuite::class) {
-            useKotlinTest("1.8.0")
+            useKotlinTest(libs.versions.kotlin)
         }
     }
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.5")
+    implementation(libs.cli)
 }
