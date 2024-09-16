@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            version("kotlin", "1.8.10")
+            version("kotlin", "2.0.20")
             library("cli", "org.jetbrains.kotlinx:kotlinx-cli:0.3.6")
         }
     }

@@ -27,7 +27,11 @@ fun main(args: Array<String>) {
     }
 }
 
-private fun printResults(message: String, encryptedText: ByteArray, decryptedText: ByteArray) {
+private fun printResults(
+    message: String,
+    encryptedText: ByteArray,
+    decryptedText: ByteArray,
+) {
     println("Clear text: $message")
     println("Encrypted text: " + BigInteger(encryptedText).toString(HEX_RADIX))
     println("Decrypted text: " + decryptedText.toString(Charsets.UTF_8))
@@ -36,6 +40,4 @@ private fun printResults(message: String, encryptedText: ByteArray, decryptedTex
 private const val HEX_RADIX = 16
 
 @Throws(IOException::class)
-private fun loadClearTextFromFile(filePath: String): String {
-    return Paths.get(filePath).readText()
-}
+private fun loadClearTextFromFile(filePath: String): String = Paths.get(filePath).readText()
