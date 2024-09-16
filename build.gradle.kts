@@ -8,7 +8,7 @@ plugins {
 }
 
 application {
-    mainClass.set("dev.fobo66.crypto.Lab2Kt")
+    mainClass = "dev.fobo66.crypto.Lab2Kt"
 }
 
 kotlin {
