@@ -14,8 +14,7 @@ fun main(args: Array<String>) {
     val inputFile by parser.option(ArgType.String, shortName = "f", fullName = "file", description = "Input file")
     try {
         parser.parse(args)
-        if (inputFile != null) {
-            val filePath = inputFile!!
+        inputFile?.let { filePath ->
             println("Reading cleartext from file $filePath...")
             message = loadClearTextFromFile(filePath)
         }
