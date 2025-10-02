@@ -8,16 +8,17 @@ import java.nio.file.Paths
 import kotlin.io.path.readText
 
 fun main(args: Array<String>) {
-    val rsa = RSA()
     var message = "Hello World!"
     val parser = ArgParser("lab2")
     val inputFile by parser.option(ArgType.String, shortName = "f", fullName = "file", description = "Input file")
+    val keyLength by parser.option(ArgType.Int, shortName = "l", fullName = "length", description = "Key length. Default is $DEFAULT_KEY_LENGTH")
     try {
         parser.parse(args)
         inputFile?.let { filePath ->
             println("Reading cleartext from file $filePath...")
             message = loadClearTextFromFile(filePath)
         }
+        val rsa = RSA(keyLength = keyLength ?: DEFAULT_KEY_LENGTH)
         val encryptedText = rsa.encrypt(message.toByteArray())
         val decryptedText = rsa.decrypt(encryptedText)
         printResults(message, encryptedText, decryptedText)

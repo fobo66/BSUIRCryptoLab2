@@ -12,4 +12,13 @@ class Lab2Test {
         val decryptedText = rsa.decrypt(encryptedText)
         assertEquals(clearText, decryptedText.toString(Charsets.UTF_8))
     }
+
+    @Test
+    fun `RSA with customized key length`() {
+        val rsa = RSA(keyLength = 2048)
+        val clearText = "test"
+        val encryptedText = rsa.encrypt(clearText.toByteArray())
+        val decryptedText = rsa.decrypt(encryptedText)
+        assertEquals(clearText, decryptedText.toString(Charsets.UTF_8))
+    }
 }

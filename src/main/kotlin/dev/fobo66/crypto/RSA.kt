@@ -4,6 +4,8 @@ import java.math.BigInteger
 import java.util.Random
 import java.util.concurrent.ThreadLocalRandom
 
+const val DEFAULT_KEY_LENGTH = 1024
+
 class RSA(
     keyLength: Int = DEFAULT_KEY_LENGTH,
     random: Random = ThreadLocalRandom.current()
@@ -28,9 +30,5 @@ class RSA(
 
     fun decrypt(message: ByteArray?): ByteArray {
         return BigInteger(message).modPow(d, keyPowerN).toByteArray()
-    }
-
-    companion object {
-        const val DEFAULT_KEY_LENGTH = 1024
     }
 }
