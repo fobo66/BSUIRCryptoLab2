@@ -10,8 +10,18 @@ import kotlin.io.path.readText
 fun main(args: Array<String>) {
     var message = "Hello World!"
     val parser = ArgParser("lab2")
-    val inputFile by parser.option(ArgType.String, shortName = "f", fullName = "file", description = "Input file")
-    val keyLength by parser.option(ArgType.Int, shortName = "l", fullName = "length", description = "Key length. Default is $DEFAULT_KEY_LENGTH")
+    val inputFile by parser.option(
+        type = ArgType.String,
+        shortName = "f",
+        fullName = "file",
+        description = "Input file"
+    )
+    val keyLength by parser.option(
+        type = ArgType.Int,
+        shortName = "l",
+        fullName = "length",
+        description = "Key length. Default is $DEFAULT_KEY_LENGTH"
+    )
     try {
         parser.parse(args)
         inputFile?.let { filePath ->
