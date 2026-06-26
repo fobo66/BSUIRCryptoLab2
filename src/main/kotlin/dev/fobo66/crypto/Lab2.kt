@@ -1,53 +1,56 @@
 package dev.fobo66.crypto
 
-import kotlinx.cli.ArgParser
-import kotlinx.cli.ArgType
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.core.main
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.help
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.transform.theme
+import com.github.ajalt.clikt.parameters.types.int
+import com.github.ajalt.clikt.parameters.types.path
 import java.io.IOException
 import java.math.BigInteger
-import java.nio.file.Paths
 import kotlin.io.path.readText
-
-fun main(args: Array<String>) {
-    var message = "Hello World!"
-    val parser = ArgParser("lab2")
-    val inputFile by parser.option(
-        type = ArgType.String,
-        shortName = "f",
-        fullName = "file",
-        description = "Input file"
-    )
-    val keyLength by parser.option(
-        type = ArgType.Int,
-        shortName = "l",
-        fullName = "length",
-        description = "Key length. Default is $DEFAULT_KEY_LENGTH"
-    )
-    try {
-        parser.parse(args)
-        inputFile?.let { filePath ->
-            println("Reading cleartext from file $filePath...")
-            message = loadClearTextFromFile(filePath)
-        }
-        val rsa = RSA(keyLength = keyLength ?: DEFAULT_KEY_LENGTH)
-        val encryptedText = rsa.encrypt(message.toByteArray())
-        val decryptedText = rsa.decrypt(encryptedText)
-        printResults(message, encryptedText, decryptedText)
-    } catch (e: IOException) {
-        throw IllegalStateException("Failed to read cleartext from file", e)
-    }
-}
-
-private fun printResults(
-    message: String,
-    encryptedText: ByteArray,
-    decryptedText: ByteArray,
-) {
-    println("Clear text: $message")
-    println("Encrypted text: " + BigInteger(encryptedText).toString(HEX_RADIX))
-    println("Decrypted text: " + decryptedText.toString(Charsets.UTF_8))
-}
 
 private const val HEX_RADIX = 16
 
-@Throws(IOException::class)
-private fun loadClearTextFromFile(filePath: String): String = Paths.get(filePath).readText()
+class Lab2 : CliktCommand() {
+    val inputFile by option("-f", "--file")
+        .path(mustBeReadable = true, canBeDir = false, mustExist = true)
+        .help { theme.info("Input file") }
+
+    val keyLength by option("-l", "--length")
+        .int()
+        .help { theme.info("Key length. Default is $DEFAULT_KEY_LENGTH") }
+        .default(DEFAULT_KEY_LENGTH)
+
+    override fun run() {
+        var message = "Hello World!"
+
+        try {
+            inputFile?.let {
+                echo("Reading cleartext from file ${it.fileName}...")
+                message = it.readText()
+            }
+            val rsa = RSA(keyLength = keyLength)
+            val encryptedText = rsa.encrypt(message.toByteArray())
+            val decryptedText = rsa.decrypt(encryptedText)
+            printResults(message, encryptedText, decryptedText)
+        } catch (e: IOException) {
+            throw IllegalStateException("Failed to read cleartext from file", e)
+        }
+    }
+
+    private fun printResults(
+        message: String,
+        encryptedText: ByteArray,
+        decryptedText: ByteArray,
+    ) {
+        echo("Clear text: $message")
+        echo("Encrypted text: ${BigInteger(encryptedText).toString(HEX_RADIX)}")
+        echo("Decrypted text: ${decryptedText.toString(Charsets.UTF_8)}")
+    }
+
+}
+
+fun main(args: Array<String>) = Lab2().main(args)
